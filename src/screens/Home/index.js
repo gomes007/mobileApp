@@ -1,52 +1,46 @@
-import {FlatList, Text, View, Image} from "react-native";
-import styles from './styles'
+import { useState, useEffect } from "react";
+import { FlatList, Image, Text, View } from "react-native";
+
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import formatValue from "../../utils/formValue";
+// v9 compat packages are API compatible with v8 code
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
-export function Home(){
 
-    const data = [
-        {
-            id: 1,
-            name: 'Gilson Soares',
-            salary: 1000.00,
-            photo: 'https://avatars.githubusercontent.com/u/73363753?v=4'
-        },
-        {
-            id: 2,
-            name: 'Carlos',
-            salary: 1000.00,
-            photo: 'https://avatars.githubusercontent.com/u/73363753?v=4'
-        },
-        {
-            id: 3,
-            name: 'Ana',
-            salary: 1000.00,
-            photo: 'https://avatars.githubusercontent.com/u/73363753?v=4'
-        },
-        {
-            id: 4,
-            name: 'Paulo',
-            salary: 1000.00,
-            photo: 'https://avatars.githubusercontent.com/u/73363753?v=4'
-        },
-        {
-            id: 5,
-            name: 'Patricia',
-            salary: 1000.00,
-            photo: 'https://avatars.githubusercontent.com/u/22238804?v=4'
-        }
-    ]
+import styles from './styles';
+
+export function Home() {
+
+    const [clients, setClients] = useState([]);
+
+    function getAllClients() {
+        firebase.firestore()
+            .collection('clients')
+            .get()
+            .then(response => {
+                const data = response.docs.map(doc => {
+                    return {
+                        id: doc.id,
+                        ...doc.data()
+                    }
+                })
+                setClients(data)
+            })
+            .catch((error) => console.log('error'))
+    }
+
+    useEffect(() => {
+        getAllClients();
+    }, [])
 
     return (
         <View style={styles.container}>
-            <Text>Tela Home</Text>
             <View style={styles.listContainer}>
                 <FlatList
-                    data={data}
+                    data={clients}
                     keyExtractor={item => item.id}
                     scrollEnabled={true}
-                    renderItem={({item}) => (
+                    renderItem={({ item }) => (
                         <View style={styles.listContent}>
                             <Image
                                 style={styles.imageUser}
@@ -57,9 +51,9 @@ export function Home(){
                             <View style={styles.descriptionContent}>
                                 <View>
                                     <Text style={styles.description}>{item.name}</Text>
-                                    <Text style={styles.description}>{'R$ ' + formatValue(item.salary)}</Text>
+                                    <Text style={styles.description}>{'R$ ' + item.salary}</Text>
                                 </View>
-                                <FeatherIcon name="chevron-right" style={styles.icon}/>
+                                <FeatherIcon name="chevron-right" style={styles.icon} />
                             </View>
                         </View>
                     )}
