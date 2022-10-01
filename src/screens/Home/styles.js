@@ -38,6 +38,24 @@ const styles = StyleSheet.create({
     icon: {
         fontSize: 30,
         color: '#979797'
+    }, searchContainer: {
+        marginTop: 30,
+        paddingHorizontal: 20
+    },
+    floatingButtonContainer: {
+        backgroundColor: '#5db075',
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        right: 30,
+        bottom: 30
+    },
+    floatingButtonStyle: {
+        fontSize: 40,
+        color:"#fff"
     }
 
 
